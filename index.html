@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+</head>
+<body>
+<form action="/" method="get">
+    <label for="filter">Filter:</label>
+    <input type="text" id="filter" name="filter" placeholder="Enter filter" value="{{.Filter}}">
+    <button type="submit">Apply Filter</button>
+    <br>
+    <label for="sort">Sort:</label>
+    <select id="sort" name="sort">
+        <option value="name"{{if eq .Sort "name"}} selected{{end}}>By Name</option>
+        <option value="price"{{if eq .Sort "price"}} selected{{end}}>By Price</option>
+    </select>
+    <button type="submit">Apply Sorting</button>
+</form>
+<ul>
+    {{range .Products}}
+    <li>{{.ID}} - {{.Name}} - ${{.Price}}</li>
+    {{end}}
+</ul>
+<form action="/" method="get">
+    <label for="page">Page:</label>
+    <input type="number" id="page" name="page" min="1" value="{{.Page}}">
+    <button type="submit">Go</button>
+</form>
+</body>
+</html>
