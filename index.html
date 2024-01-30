@@ -1,30 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product List</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h2 {
+            color: #007bff;
+        }
+        form {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            margin-right: 10px;
+        }
+        input, select, button {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #ffffff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .success-message, .error-message {
+            font-weight: bold;
+        }
+        .success-message {
+            color: #28a745;
+        }
+        .error-message {
+            color: #dc3545;
+        }
+    </style>
 </head>
 <body>
+<h2>Product List</h2>
 <form action="/" method="get">
     <label for="filter">Filter:</label>
     <input type="text" id="filter" name="filter" placeholder="Enter filter" value="{{.Filter}}">
-    <button type="submit">Apply Filter</button>
-    <br>
     <label for="sort">Sort:</label>
     <select id="sort" name="sort">
-        <option value="name"{{if eq .Sort "name"}} selected{{end}}>By Name</option>
-        <option value="price"{{if eq .Sort "price"}} selected{{end}}>By Price</option>
+        <option value="name_asc"{{if eq .Sort "name_asc"}} selected{{end}}>By Name (Asc)</option>
+        <option value="name_desc"{{if eq .Sort "name_desc"}} selected{{end}}>By Name (Desc)</option>
+        <option value="price_asc"{{if eq .Sort "price_asc"}} selected{{end}}>By Price (Asc)</option>
+        <option value="price_desc"{{if eq .Sort "price_desc"}} selected{{end}}>By Price (Desc)</option>
     </select>
-    <button type="submit">Apply Sorting</button>
+    <button type="submit">Apply Filter & Sorting</button>
 </form>
 <ul>
     {{range .Products}}
-    <li>{{.ID}} - {{.Name}} - ${{.Price}}</li>
+    <li>{{.ID}} - <strong>{{.Name}}</strong> - ${{.Price}}
+        <form action="/update" method="post" style="display: inline;">
+            <input type="hidden" name="productIdUpdate" value="{{.ID}}">
+            <label for="newName">New Name:</label>
+            <input type="text" id="newName" name="newName" placeholder="New Name">
+            <label for="newPrice">New Price:</label>
+            <input type="text" id="newPrice" name="newPrice" placeholder="New Price">
+            <button type="submit">Update</button>
+        </form>
+        <form action="/delete" method="post" style="display: inline;">
+            <input type="hidden" name="productIdDelete" value="{{.ID}}">
+            <button type="submit">Delete</button>
+        </form>
+    </li>
     {{end}}
 </ul>
+<form action="/register" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+    <label for="price">Price:</label>
+    <input type="text" id="price" name="price" required>
+    <button type="submit">Add Product</button>
+</form>
 <form action="/" method="get">
     <label for="page">Page:</label>
     <input type="number" id="page" name="page" min="1" value="{{.Page}}">
     <button type="submit">Go</button>
 </form>
+{{ if .SuccessMsg }}
+<p class="success-message">{{ .SuccessMsg }}</p>
+{{ end }}
+{{ if .ErrorMsg }}
+<p class="error-message">{{ .ErrorMsg }}</p>
+{{ end }}
 </body>
 </html>
